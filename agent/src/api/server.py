@@ -15,7 +15,7 @@ from pydantic import BaseModel
 
 from ..agents import counselor, investigator, scout
 from ..core.config import settings
-from ..core.tiger_client import query
+from ..core.tiger_client import query, query_many
 from ..normalization.companies import TARGET_COMPANIES
 
 app = FastAPI(title="WAGE.md API", version="1.0.0")
@@ -78,30 +78,42 @@ def companies() -> dict:
 
 
 def _company_payload(company: str) -> dict:
-    rows = query(
-        "SELECT role_family, level_normalized, count(*), "
+    parameters = {"c": company}
+    rows, totals, role_totals, locations, monthly_filings, pub = query_many([
+        ("SELECT role_family, level_normalized, count(*), "
         "round(percentile_cont(0.5) WITHIN GROUP (ORDER BY wage_low_usd)), "
         "round(percentile_cont(0.75) WITHIN GROUP (ORDER BY wage_low_usd)), "
         "round(percentile_cont(0.9) WITHIN GROUP (ORDER BY wage_low_usd)) "
         "FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0 "
-        "GROUP BY role_family, level_normalized HAVING count(*)>=2 ORDER BY 4 DESC LIMIT 40",
-        {"c": company},
-    ).result_rows
-    total = query(
-        "SELECT count(*) FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0", {"c": company}
-    ).result_rows[0][0]
-    pub = query(
-        "SELECT page_url, last_published::text FROM published_pages "
-        "WHERE employer_normalized=%(c)s AND markdown<>''", {"c": company}
-    ).result_rows
+        "GROUP BY role_family, level_normalized HAVING count(*)>=2 ORDER BY 4 DESC LIMIT 40"),
+        "SELECT count(*) FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0",
+        ("SELECT role_family, count(*) FROM filings "
+        "WHERE employer_normalized=%(c)s AND wage_low_usd>0 "
+        "GROUP BY role_family ORDER BY 2 DESC"),
+        ("SELECT worksite_state, count(*), "
+        "round(percentile_cont(0.5) WITHIN GROUP (ORDER BY wage_low_usd)) "
+        "FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0 "
+        "AND worksite_state<>'' GROUP BY worksite_state "
+        "HAVING count(*)>=5 ORDER BY 2 DESC LIMIT 6"),
+        ("SELECT to_char(date_trunc('month', decision_date), 'YYYY-MM'), count(*) "
+        "FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0 "
+        "GROUP BY 1 ORDER BY 1"),
+        ("SELECT page_url, last_published::text FROM published_pages "
+        "WHERE employer_normalized=%(c)s AND markdown<>''"),
+    ], parameters)
     return {
         "company": company,
-        "total_filings": total,
+        "total_filings": totals[0][0],
         "rows": [
             {"role_family": r[0], "level": r[1], "sample_size": r[2],
              "p50": int(r[3]), "p75": int(r[4]), "p90": int(r[5])}
             for r in rows
         ],
+        "roleTotals": [{"role": r[0], "count": r[1]} for r in role_totals],
+        "locations": [
+            {"state": r[0], "count": r[1], "median": int(r[2])} for r in locations
+        ],
+        "monthlyFilings": [{"month": r[0], "count": r[1]} for r in monthly_filings],
         "briefUrl": pub[0][0] if pub else None,
     }
 

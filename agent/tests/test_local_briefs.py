@@ -53,13 +53,14 @@ def test_index_brief_and_company_api_share_local_url(monkeypatch):
             rows = [("Acme Inc", "# Brief", "2026-10-31", 12)] if parameters["c"] == "Acme Inc" else []
         elif "SELECT page_url" in sql:
             rows = [(url, "2026-10-31")]
-        elif "SELECT count(*) FROM filings" in sql:
-            rows = [(12,)]
         else:
             rows = []
         return QueryResult(rows, [])
 
     monkeypatch.setattr(server, "query", fake_query)
+    monkeypatch.setattr(server, "query_many", lambda statements, parameters: [
+        [], [(12,)], [], [], [], [(url, "2026-10-31")]
+    ])
     client = TestClient(server.app)
 
     assert client.get("/index").json()["pages"][0]["url"] == url

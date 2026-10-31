@@ -39,6 +39,17 @@ make demo                    # start the API and frontend
 
 For a smaller dataset, use the [FY2026 Q3 DOL samples](data-samples/README.md).
 
+To expand the certified FY2026 Q3 Tiger Data seed to 80,000 filings for the ten target companies:
+
+```bash
+cd agent && uv run python -m src.ingestion.expand_corpus
+```
+
+This retains existing filings and adds eligible, certified, full-time H-1B cases from the
+official FY2026 Q3 LCA workbook, then a reproducible hash selection from FY2025 Q1–Q4 LCA
+workbooks. Downloads are cached in `data-cache/`; rerunning at the target inserts nothing.
+New employer/title pairs require `OPENAI_API_KEY` for normalization.
+
 `make schema` creates tables and applies compatible additions without deleting existing data.
 It fails on incompatible tables.
 

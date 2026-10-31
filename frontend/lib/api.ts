@@ -15,6 +15,9 @@ export type CompanyDistribution = {
   company: string;
   total_filings: number;
   rows: DistRow[];
+  roleTotals: Array<{ role: string; count: number }>;
+  locations: Array<{ state: string; median: number; count: number }>;
+  monthlyFilings: Array<{ month: string; count: number }>;
   briefUrl?: string | null;
 };
 

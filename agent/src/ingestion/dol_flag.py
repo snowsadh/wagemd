@@ -27,7 +27,10 @@ DATA_CACHE = settings.repo_root / "data-cache"
 # Field -> candidate column names across LCA and PERM file layouts.
 FIELD_CANDIDATES: dict[str, list[str]] = {
     "case_number": ["CASE_NUMBER"],
+    "case_status": ["CASE_STATUS"],
     "decision_date": ["DECISION_DATE"],
+    "visa_class": ["VISA_CLASS"],
+    "full_time_position": ["FULL_TIME_POSITION"],
     "employer": ["EMPLOYER_NAME", "EMP_BUSINESS_NAME"],
     "job_title": ["JOB_TITLE", "JOB_INFO_JOB_TITLE"],
     "soc_code": ["SOC_CODE", "PWD_SOC_CODE", "PW_SOC_CODE"],
@@ -114,7 +117,9 @@ def parse_filtered(
     it = ws.iter_rows(values_only=True)
     header = list(next(it))
     idx = _resolve_columns(header)
-    required = ("case_number", "employer", "job_title", "wage_from")
+    required = ("case_number", "case_status", "employer", "job_title", "wage_from")
+    if case_type == "LCA":
+        required += ("visa_class", "full_time_position")
     missing = [f for f in required if f not in idx]
     if missing:
         wb.close()
@@ -127,6 +132,13 @@ def parse_filtered(
     rows: list[dict] = []
     bad_dates = 0
     for raw in it:
+        if str(raw[idx["case_status"]] or "").strip().casefold() != "certified":
+            continue
+        if case_type == "LCA" and (
+            str(raw[idx["visa_class"]] or "").strip().upper() != "H-1B"
+            or str(raw[idx["full_time_position"]] or "").strip().upper() != "Y"
+        ):
+            continue
         emp_raw = raw[idx["employer"]]
         if patterns_up is not None:  # on-demand: match arbitrary employer by pattern
             up = str(emp_raw or "").upper()

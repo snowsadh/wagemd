@@ -113,6 +113,17 @@ def query_dicts(sql: str, parameters: dict | None = None) -> list[dict]:
     return [dict(zip(result.column_names, row)) for row in result.result_rows]
 
 
+def query_many(statements: Sequence[str], parameters: dict | None = None) -> list[list[tuple]]:
+    """Read related aggregates from one consistent Tiger Data snapshot."""
+    with transaction() as conn, conn.cursor() as cur:
+        cur.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY")
+        results = []
+        for statement in statements:
+            cur.execute(statement, parameters)
+            results.append(cur.fetchall())
+        return results
+
+
 def command(sql: str, parameters: dict | None = None) -> None:
     with transaction() as conn, conn.cursor() as cur:
         cur.execute(sql, parameters)
