@@ -1,0 +1,139 @@
+employer_normalized,internal_level,canonical_level,role_family,source_url,notes
+anthropic,T3,L4,SWE,https://www.levels.fyi/companies/anthropic/salaries/software-engineer,All Anthropic SWEs publicly titled 'Member of Technical Staff' regardless of internal level. T3 ~$300K TC = mid/senior tier.
+anthropic,T4,L5,SWE,https://www.levels.fyi/companies/anthropic/salaries/software-engineer,T4 ~$430K TC = staff equivalent. Maps to Google L6.
+anthropic,T5,L6,SWE,https://www.levels.fyi/companies/anthropic/salaries/software-engineer,T5 ~$600K TC = senior staff equivalent. Maps to Google L7.
+anthropic,T6,L7,SWE,https://www.levels.fyi/companies/anthropic/salaries/software-engineer,T6 ~$830K TC = principal equivalent. Maps to Google L8.
+anthropic,Member of Technical Staff,L5,SWE,https://www.anthropic.com/careers,Default level when DOL filing shows MTS without numerical suffix. Best guess is staff-equivalent.
+anthropic,T3,L4,PM,https://www.levels.fyi/companies/anthropic/salaries/product-manager,Anthropic PM ladder mirrors SWE ladder. Limited public data.
+anthropic,T4,L5,PM,https://www.levels.fyi/companies/anthropic/salaries/product-manager,Anthropic PM ladder mirrors SWE ladder.
+anthropic,T5,L6,PM,https://www.levels.fyi/companies/anthropic/salaries/product-manager,Anthropic PM ladder mirrors SWE ladder.
+anthropic,T3,L4,Design,https://www.levels.fyi/companies/anthropic/salaries/product-designer,Anthropic Design ladder mirrors SWE ladder.
+anthropic,T4,L5,Design,https://www.levels.fyi/companies/anthropic/salaries/product-designer,Anthropic Design ladder mirrors SWE ladder.
+anthropic,T3,L4,FDE,https://job-boards.greenhouse.io/anthropic,Anthropic 'Applied AI Engineer' or 'Forward Deployed Engineer' role. Typically T3-T5.
+anthropic,T4,L5,FDE,https://job-boards.greenhouse.io/anthropic,Anthropic FDE/Applied AI role at staff level.
+openai,L3,L3,SWE,https://www.levels.fyi/companies/openai/salaries/software-engineer,OpenAI levels are 'FAANG -1'. L3 = entry/junior. Rare hires at this level.
+openai,L4,L4,SWE,https://www.levels.fyi/companies/openai/salaries/software-engineer,OpenAI L4 = Google L5 (Senior). Most common hire level.
+openai,L5,L5,SWE,https://www.levels.fyi/companies/openai/salaries/software-engineer,OpenAI L5 = Google L6 (Staff). Recruiter confirmed.
+openai,L6,L6,SWE,https://www.levels.fyi/companies/openai/salaries/software-engineer,OpenAI L6 = Google L7 (Senior Staff/Principal). Top public IC level on levels.fyi.
+openai,Member of Technical Staff,L5,SWE,https://openai.com/careers/,Default level when MTS used without numerical context. Best guess: staff-equivalent.
+openai,L4,L4,PM,https://www.levels.fyi/companies/openai/salaries/product-manager,OpenAI PM mirrors SWE ladder. L4 = Senior PM.
+openai,L5,L5,PM,https://www.levels.fyi/companies/openai/salaries/product-manager,OpenAI L5 PM = Staff PM equivalent.
+openai,L4,L4,Design,https://www.levels.fyi/companies/openai/salaries/product-designer,OpenAI Design mirrors SWE ladder.
+openai,L5,L5,Design,https://www.levels.fyi/companies/openai/salaries/product-designer,OpenAI Design mirrors SWE ladder.
+openai,L4,L4,FDE,https://openai.com/careers/,OpenAI 'Solutions Engineer' or 'Applied AI Engineer' role.
+openai,L5,L5,FDE,https://openai.com/careers/,OpenAI FDE/Applied at staff level.
+stripe,L1,L2,SWE,https://www.careerclimb.app/career-ladder/stripe-software-engineer,Stripe L1 = entry/new grad. External title 'Software Engineer'. Time-capped level.
+stripe,L2,L3,SWE,https://www.careerclimb.app/career-ladder/stripe-software-engineer,Stripe L2 = mid IC. External title 'Software Engineer'.
+stripe,L3,L4,SWE,https://www.careerclimb.app/career-ladder/stripe-software-engineer,Stripe L3 = Senior. Terminal (can stay forever). External title 'Software Engineer'. Maps to Google L5 / Meta E5.
+stripe,L4,L5,SWE,https://www.careerclimb.app/career-ladder/stripe-software-engineer,Stripe L4 = Staff Software Engineer. External title flips to 'Staff Software Engineer'. Maps to Google L6.
+stripe,L5,L6,SWE,https://www.careerclimb.app/career-ladder/stripe-software-engineer,Stripe L5 = Principal/Senior Staff equivalent. Maps to Google L7.
+stripe,Software Engineer,L4,SWE,https://stripe.com/jobs/listing,Default canonical when DOL filing shows generic 'Software Engineer' title. Most common Stripe band.
+stripe,Staff Software Engineer,L5,SWE,https://stripe.com/jobs/listing,Default canonical for 'Staff Software Engineer' title. = Stripe L4.
+stripe,L3,L4,PM,https://www.levels.fyi/companies/stripe/salaries/product-manager,Stripe PM L3 = Senior PM. Mirrors SWE ladder.
+stripe,L4,L5,PM,https://www.levels.fyi/companies/stripe/salaries/product-manager,Stripe L4 PM = Staff PM.
+stripe,L3,L4,Design,https://www.levels.fyi/companies/stripe/salaries/product-designer,Stripe Design L3 = Senior Designer.
+stripe,L4,L5,Design,https://www.levels.fyi/companies/stripe/salaries/product-designer,Stripe Design L4 = Staff Designer.
+stripe,L3,L4,FDE,https://stripe.com/jobs/listing,Stripe 'Solutions Architect' or 'Implementation Engineer' role. Senior tier.
+stripe,L4,L5,FDE,https://stripe.com/jobs/listing,Stripe Solutions Architect at staff tier.
+google,L3,L2,SWE,https://www.levels.fyi/companies/google/salaries/software-engineer,Google L3 = Software Engineer II = new grad / entry level (0-1 YOE).
+google,L4,L3,SWE,https://www.levels.fyi/companies/google/salaries/software-engineer,Google L4 = Software Engineer III = mid IC (2-5 YOE).
+google,L5,L4,SWE,https://www.levels.fyi/companies/google/salaries/software-engineer,Google L5 = Senior Software Engineer (6-9 YOE). Terminal level for many.
+google,L6,L5,SWE,https://www.levels.fyi/companies/google/salaries/software-engineer,Google L6 = Staff Software Engineer (9+ YOE).
+google,L7,L6,SWE,https://www.levels.fyi/companies/google/salaries/software-engineer,Google L7 = Senior Staff Software Engineer.
+google,L8,L7,SWE,https://www.levels.fyi/companies/google/salaries/software-engineer,Google L8 = Principal Software Engineer.
+google,L9,L7,SWE,https://www.levels.fyi/companies/google/salaries/software-engineer,Google L9 = Distinguished Software Engineer. Capped at canonical L7 in WAGE schema.
+google,L10,L7,SWE,https://www.levels.fyi/companies/google/salaries/software-engineer,Google L10 = Google Fellow. Capped at canonical L7.
+google,Software Engineer II,L2,SWE,https://careers.google.com/jobs/,DOL filing title. = L3 internal.
+google,Software Engineer III,L3,SWE,https://careers.google.com/jobs/,DOL filing title. = L4 internal.
+google,Senior Software Engineer,L4,SWE,https://careers.google.com/jobs/,DOL filing title. = L5 internal.
+google,Staff Software Engineer,L5,SWE,https://careers.google.com/jobs/,DOL filing title. = L6 internal.
+google,L4,L3,PM,https://www.levels.fyi/companies/google/salaries/product-manager,Google PM L4 = Associate PM / PM I. PM ladder starts higher than SWE.
+google,L5,L4,PM,https://www.levels.fyi/companies/google/salaries/product-manager,Google PM L5 = Senior PM.
+google,L6,L5,PM,https://www.levels.fyi/companies/google/salaries/product-manager,Google PM L6 = Group Product Manager / Staff PM.
+google,L7,L6,PM,https://www.levels.fyi/companies/google/salaries/product-manager,Google PM L7 = Senior GPM / Director-track PM.
+google,L4,L3,Design,https://www.levels.fyi/companies/google/salaries/product-designer,Google Designer L4 = mid IC.
+google,L5,L4,Design,https://www.levels.fyi/companies/google/salaries/product-designer,Google Designer L5 = Senior.
+google,L6,L5,Design,https://www.levels.fyi/companies/google/salaries/product-designer,Google Designer L6 = Staff.
+meta,E3,L2,SWE,https://www.levels.fyi/companies/facebook/salaries/software-engineer,Meta E3 = new grad / entry IC. Time-capped.
+meta,E4,L3,SWE,https://www.levels.fyi/companies/facebook/salaries/software-engineer,Meta E4 = mid IC. Time-capped (must hit E5 within ~4yrs).
+meta,E5,L4,SWE,https://www.levels.fyi/companies/facebook/salaries/software-engineer,Meta E5 = Senior. Terminal level. Maps to Google L5.
+meta,E6,L5,SWE,https://www.levels.fyi/companies/facebook/salaries/software-engineer,Meta E6 = Staff. Maps to Google L6.
+meta,E7,L6,SWE,https://www.levels.fyi/companies/facebook/salaries/software-engineer,Meta E7 = Senior Staff. Maps to Google L7.
+meta,E8,L7,SWE,https://www.levels.fyi/companies/facebook/salaries/software-engineer,Meta E8 = Principal. Maps to Google L8.
+meta,E9,L7,SWE,https://www.levels.fyi/companies/facebook/salaries/software-engineer,Meta E9 = Distinguished. Capped at canonical L7.
+meta,E10,L7,SWE,https://www.levels.fyi/companies/facebook/salaries/software-engineer,Meta E10 = Fellow. Capped at canonical L7.
+meta,Software Engineer,L4,SWE,https://www.metacareers.com/,Default canonical for generic 'Software Engineer' title. Meta uses same title across E3-E10 publicly. Most likely E5 = Senior.
+meta,IC4,L3,PM,https://www.levels.fyi/companies/facebook/salaries/product-manager,Meta PM IC4 = PM (entry/junior PM).
+meta,IC5,L4,PM,https://www.levels.fyi/companies/facebook/salaries/product-manager,Meta PM IC5 = Senior PM.
+meta,IC6,L5,PM,https://www.levels.fyi/companies/facebook/salaries/product-manager,Meta PM IC6 = Group PM / Staff PM.
+meta,IC4,L3,Design,https://www.levels.fyi/companies/facebook/salaries/product-designer,Meta Designer IC4 = Product Designer.
+meta,IC5,L4,Design,https://www.levels.fyi/companies/facebook/salaries/product-designer,Meta Designer IC5 = Senior Product Designer.
+meta,IC6,L5,Design,https://www.levels.fyi/companies/facebook/salaries/product-designer,Meta Designer IC6 = Staff Product Designer.
+amazon,L4,L2,SWE,https://www.levels.fyi/companies/amazon/salaries/software-engineer,Amazon L4 = SDE I = new grad / entry-level IC.
+amazon,SDE I,L2,SWE,https://www.amazon.jobs/,DOL filing title. = L4 internal at Amazon.
+amazon,L5,L3,SWE,https://www.levels.fyi/companies/amazon/salaries/software-engineer,Amazon L5 = SDE II = mid IC (2-5 YOE).
+amazon,SDE II,L3,SWE,https://www.amazon.jobs/,DOL filing title. = L5 internal at Amazon.
+amazon,L6,L4,SWE,https://www.levels.fyi/companies/amazon/salaries/software-engineer,Amazon L6 = SDE III = Senior SDE. Maps to Google L5.
+amazon,SDE III,L4,SWE,https://www.amazon.jobs/,DOL filing title. = L6 internal at Amazon.
+amazon,Senior SDE,L4,SWE,https://www.amazon.jobs/,DOL filing title variant. = L6 internal.
+amazon,L7,L6,SWE,https://www.levels.fyi/companies/amazon/salaries/software-engineer,Amazon L7 = Principal SDE. Maps roughly to Google L7 / Meta E7. Higher scope than Google L6 staff.
+amazon,Principal SDE,L6,SWE,https://www.amazon.jobs/,DOL filing title. = L7 internal at Amazon.
+amazon,L8,L7,SWE,https://www.levels.fyi/companies/amazon/salaries/software-engineer,Amazon L8 = Senior Principal SDE.
+amazon,L5,L3,PM,https://www.levels.fyi/companies/amazon/salaries/product-manager,Amazon PM L5 = PM-Technical / mid PM.
+amazon,L6,L4,PM,https://www.levels.fyi/companies/amazon/salaries/product-manager,Amazon PM L6 = Senior PM.
+amazon,L7,L6,PM,https://www.levels.fyi/companies/amazon/salaries/product-manager,Amazon PM L7 = Principal PM.
+amazon,L5,L3,Design,https://www.levels.fyi/companies/amazon/salaries/product-designer,Amazon Designer L5 = mid Designer.
+amazon,L6,L4,Design,https://www.levels.fyi/companies/amazon/salaries/product-designer,Amazon Designer L6 = Senior UX Designer.
+amazon,L7,L6,Design,https://www.levels.fyi/companies/amazon/salaries/product-designer,Amazon Designer L7 = Principal UX Designer.
+microsoft,59,L2,SWE,https://www.levels.fyi/companies/microsoft/salaries/software-engineer,Microsoft level 59 = SE = new grad. Rare external hire.
+microsoft,60,L2,SWE,https://www.levels.fyi/companies/microsoft/salaries/software-engineer,Microsoft level 60 = SE = entry IC.
+microsoft,61,L3,SWE,https://www.levels.fyi/companies/microsoft/salaries/software-engineer,Microsoft level 61 = SE II = mid IC.
+microsoft,62,L3,SWE,https://www.levels.fyi/companies/microsoft/salaries/software-engineer,Microsoft level 62 = SE II = mid IC.
+microsoft,63,L4,SWE,https://www.levels.fyi/companies/microsoft/salaries/software-engineer,Microsoft level 63 = Senior SE. Maps to Google L5.
+microsoft,64,L4,SWE,https://www.levels.fyi/companies/microsoft/salaries/software-engineer,Microsoft level 64 = Senior SE (higher band).
+microsoft,65,L5,SWE,https://www.levels.fyi/companies/microsoft/salaries/software-engineer,Microsoft level 65 = Principal SE. NOTE: 'Principal' at Microsoft = Staff at FAANG. Maps to Google L6.
+microsoft,66,L6,SWE,https://www.levels.fyi/companies/microsoft/salaries/software-engineer,Microsoft level 66 = Senior Principal. Maps to Google L7.
+microsoft,67,L7,SWE,https://www.levels.fyi/companies/microsoft/salaries/software-engineer,Microsoft level 67 = Partner Engineer. Maps to Google L8+.
+microsoft,Software Engineer II,L3,SWE,https://careers.microsoft.com/,DOL filing title. = level 61-62.
+microsoft,Senior Software Engineer,L4,SWE,https://careers.microsoft.com/,DOL filing title. = level 63-64.
+microsoft,Principal Software Engineer,L5,SWE,https://careers.microsoft.com/,DOL filing title. = level 65. NOTE: 'Principal' here is staff-equivalent NOT senior staff.
+microsoft,63,L4,PM,https://www.levels.fyi/companies/microsoft/salaries/product-manager,Microsoft PM level 63 = Senior PM.
+microsoft,64,L4,PM,https://www.levels.fyi/companies/microsoft/salaries/product-manager,Microsoft PM level 64 = Senior PM.
+microsoft,65,L5,PM,https://www.levels.fyi/companies/microsoft/salaries/product-manager,Microsoft PM level 65 = Principal PM.
+microsoft,63,L4,Design,https://www.levels.fyi/companies/microsoft/salaries/product-designer,Microsoft Designer level 63 = Senior Designer.
+microsoft,65,L5,Design,https://www.levels.fyi/companies/microsoft/salaries/product-designer,Microsoft Designer level 65 = Principal Designer.
+apple,ICT2,L2,SWE,https://www.levels.fyi/companies/apple/salaries/software-engineer,Apple ICT2 = entry / new grad SWE.
+apple,ICT3,L3,SWE,https://www.levels.fyi/companies/apple/salaries/software-engineer,Apple ICT3 = mid IC.
+apple,ICT4,L4,SWE,https://www.levels.fyi/companies/apple/salaries/software-engineer,Apple ICT4 = Senior SWE.
+apple,ICT5,L5,SWE,https://www.levels.fyi/companies/apple/salaries/software-engineer,Apple ICT5 = Staff / Principal. Maps to Google L6.
+apple,ICT6,L7,SWE,https://www.levels.fyi/companies/apple/salaries/software-engineer,Apple ICT6 = Senior Principal / Distinguished. Maps to Google L7-L8.
+apple,Software Engineer,L4,SWE,https://jobs.apple.com/en-us/search,Default canonical when DOL filing shows generic title. Most common Apple band.
+apple,ICT3,L3,PM,https://www.levels.fyi/companies/apple/salaries/product-manager,Apple PM ICT3 = PM I.
+apple,ICT4,L4,PM,https://www.levels.fyi/companies/apple/salaries/product-manager,Apple PM ICT4 = Senior PM.
+apple,ICT5,L5,PM,https://www.levels.fyi/companies/apple/salaries/product-manager,Apple PM ICT5 = Principal PM.
+apple,ICT4,L4,Design,https://www.levels.fyi/companies/apple/salaries/product-designer,Apple Designer ICT4 = Senior Designer.
+apple,ICT5,L5,Design,https://www.levels.fyi/companies/apple/salaries/product-designer,Apple Designer ICT5 = Staff/Principal Designer.
+databricks,L3,L2,SWE,https://www.levels.fyi/companies/databricks/salaries/software-engineer,Databricks L3 = Software Engineer = new grad / entry IC.
+databricks,L4,L3,SWE,https://www.levels.fyi/companies/databricks/salaries/software-engineer,Databricks L4 = mid IC SWE.
+databricks,L5,L4,SWE,https://www.levels.fyi/companies/databricks/salaries/software-engineer,Databricks L5 = Senior SWE. Most common public level.
+databricks,L6,L5,SWE,https://www.levels.fyi/companies/databricks/salaries/software-engineer,Databricks L6 = Staff Engineer.
+databricks,L7,L6,SWE,https://www.levels.fyi/companies/databricks/salaries/software-engineer,Databricks L7 = Senior Staff Engineer.
+databricks,L8,L7,SWE,https://www.levels.fyi/companies/databricks/salaries/software-engineer,Databricks L8 = Principal Engineer.
+databricks,Software Engineer,L2,SWE,https://www.databricks.com/company/careers,DOL filing title. = L3 internal.
+databricks,Senior Software Engineer,L4,SWE,https://www.databricks.com/company/careers,DOL filing title. = L5 internal.
+databricks,Staff Engineer,L5,SWE,https://www.databricks.com/company/careers,DOL filing title. = L6 internal.
+databricks,L5,L4,PM,https://www.levels.fyi/companies/databricks/salaries/product-manager,Databricks PM L5 = Senior PM. Common hire level.
+databricks,L6,L5,PM,https://www.levels.fyi/companies/databricks/salaries/product-manager,Databricks PM L6 = Staff PM.
+databricks,L5,L4,Design,https://www.levels.fyi/companies/databricks/salaries/product-designer,Databricks Designer L5 = Senior Designer.
+databricks,L5,L4,FDE,https://www.databricks.com/company/careers,Databricks 'Solutions Architect' / 'Resident Solutions Architect'. Senior tier.
+databricks,L6,L5,FDE,https://www.databricks.com/company/careers,Databricks Senior Solutions Architect. Staff tier.
+netflix,E3,L2,SWE,https://www.levels.fyi/companies/netflix/salaries/software-engineer,Netflix E3 = Software Engineer = entry-level. Introduced 2022 (Netflix was previously flat-level).
+netflix,E4,L3,SWE,https://www.levels.fyi/companies/netflix/salaries/software-engineer,Netflix E4 = Software Engineer II = mid IC.
+netflix,E5,L4,SWE,https://www.levels.fyi/companies/netflix/salaries/software-engineer,Netflix E5 = Senior Software Engineer.
+netflix,E6,L5,SWE,https://www.levels.fyi/companies/netflix/salaries/software-engineer,Netflix E6 = Staff Software Engineer.
+netflix,E7,L7,SWE,https://www.levels.fyi/companies/netflix/salaries/software-engineer,Netflix E7 = Principal Software Engineer. Top published IC level.
+netflix,Senior Software Engineer,L4,SWE,https://jobs.netflix.com/,DOL filing title. Pre-2022 Netflix used this for everyone. Default to L4 (Senior) when unspecified.
+netflix,E5,L4,PM,https://www.levels.fyi/companies/netflix/salaries/product-manager,Netflix PM E5 = Senior PM.
+netflix,E6,L5,PM,https://www.levels.fyi/companies/netflix/salaries/product-manager,Netflix PM E6 = Staff/Principal PM.
+netflix,E5,L4,Design,https://www.levels.fyi/companies/netflix/salaries/product-designer,Netflix Designer E5 = Senior Designer.
+netflix,E6,L5,Design,https://www.levels.fyi/companies/netflix/salaries/product-designer,Netflix Designer E6 = Staff Designer.

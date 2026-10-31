@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-05-23",
+  "purpose": "Maps internal company level strings (as they appear in DOL PERM/LCA filings or company career pages) to WAGE.md canonical levels L1-L7.",
+  "wage_canonical_definition": {
+    "L1": "Junior / new grad (0-1 YOE)",
+    "L2": "Entry IC (1-2 YOE)",
+    "L3": "Mid IC (2-5 YOE)",
+    "L4": "Senior IC (5-8 YOE) — usually 'Senior Software Engineer' at most companies",
+    "L5": "Staff IC or first-level manager (8-12 YOE) — 'Staff' at FAANG",
+    "L6": "Senior Staff / Senior Manager",
+    "L7": "Principal / Director and above (everything else capped here)"
+  },
+  "important_notes": [
+    "WAGE canonical L4 = Senior IC. This matches Google L5, Meta E5, Stripe L3 — NOT Google L4.",
+    "Most companies' internal level numbering does NOT align with WAGE canonical numbering. Always use the mapping table, never assume.",
+    "Microsoft 'Principal' is staff-level, NOT senior staff. Different from Google/Meta where Principal is higher.",
+    "Anthropic and OpenAI both publicly title everyone 'Member of Technical Staff' (MTS). Internal levels are not visible in the title.",
+    "When DOL filing shows a generic title without level (e.g., 'Software Engineer' at Stripe), use the company's 'default' fallback row.",
+    "Netflix introduced E3-E7 levels in 2022. Pre-2022 filings will mostly show 'Senior Software Engineer' regardless of actual internal level — default to L4 (Senior).",
+    "FDE = Forward Deployed Engineer. Only included for companies with publicly known FDE-style roles (Anthropic, OpenAI, Stripe, Databricks). Other companies use 'Solutions Engineer' or 'Customer Engineer' which we treat as Other."
+  ],
+  "companies": {
+    "anthropic": {
+      "public_title_convention": "All employees titled 'Member of Technical Staff' regardless of internal level (anti-poaching strategy). Internal levels T3-T6.",
+      "ladder_source": "https://www.teamblind.com/post/anthropic-level-mapping-nnnh34ym",
+      "mapping_basis": "TC bands from cvcraft (Apr 2026) and Blind: T3 ~$300K, T4 ~$430K, T5 ~$600K, T6 ~$830K. T4 ≈ Google L6 Staff per Blind sources.",
+      "confidence": "Medium — Anthropic does not publish levels. Numbers from compensation tracker sites and employee reports.",
+      "swe": [
+        {"internal": "T3", "canonical": "L4", "note": "Senior tier"},
+        {"internal": "T4", "canonical": "L5", "note": "Staff tier"},
+        {"internal": "T5", "canonical": "L6", "note": "Senior Staff tier"},
+        {"internal": "T6", "canonical": "L7", "note": "Principal tier"},
+        {"internal": "Member of Technical Staff", "canonical": "L5", "note": "Default when no level specified — best guess"}
+      ],
+      "fde": "Forward Deployed Engineer / Applied AI Engineer role exists. Typically T3-T5."
+    },
+    "openai": {
+      "public_title_convention": "Most engineers titled 'Member of Technical Staff'. Internal levels L3-L6+.",
+      "ladder_source": "https://www.teamblind.com/post/oai-anthropic-swe-levels-os06pdcy",
+      "mapping_basis": "Per Blind discussions with recruiters: OpenAI levels are 'FAANG -1'. OpenAI L4 = Google L5 (Senior). OpenAI L5 = Google L6 (Staff). OpenAI L6 = Google L7 (Senior Staff).",
+      "confidence": "Medium-high — multiple Blind sources confirm FAANG-minus-1 mapping.",
+      "swe": [
+        {"internal": "L3", "canonical": "L3", "note": "Entry, rare hire"},
+        {"internal": "L4", "canonical": "L4", "note": "Senior (most common hire level)"},
+        {"internal": "L5", "canonical": "L5", "note": "Staff"},
+        {"internal": "L6", "canonical": "L6", "note": "Senior Staff / Principal"}
+      ],
+      "fde": "Solutions Engineer / Applied AI Engineer roles exist."
+    },
+    "stripe": {
+      "public_title_convention": "L1-L3 all titled 'Software Engineer' externally. L4+ titled 'Staff Software Engineer'. No 'Senior Software Engineer' title exists.",
+      "ladder_source": "https://www.careerclimb.app/career-ladder/stripe-software-engineer",
+      "mapping_basis": "Stripe L3 (Senior, terminal level) maps to Google L5. Stripe L4 (Staff) maps to Google L6. Stripe time-caps L1 and L2 but L3 is terminal.",
+      "confidence": "High — well-documented in public Stripe career ladder posts.",
+      "swe": [
+        {"internal": "L1", "canonical": "L2", "note": "Entry, time-capped"},
+        {"internal": "L2", "canonical": "L3", "note": "Mid IC, time-capped"},
+        {"internal": "L3", "canonical": "L4", "note": "Senior, terminal. = Google L5."},
+        {"internal": "L4", "canonical": "L5", "note": "Staff. External title flips to 'Staff Software Engineer'."},
+        {"internal": "L5", "canonical": "L6", "note": "Principal-equivalent."}
+      ],
+      "fde": "'Solutions Architect' / 'Implementation Engineer' roles."
+    },
+    "google": {
+      "public_title_convention": "Software Engineer II/III, Senior, Staff, Senior Staff, Principal. Internal L3-L10.",
+      "ladder_source": "https://candor.co/articles/tech-careers/google-promotions-the-real-scoop-on-leveling-up",
+      "mapping_basis": "Standard FAANG reference. L3 = new grad, L5 = Senior, L6 = Staff, L7 = Senior Staff, L8 = Principal.",
+      "confidence": "Very high — widely documented.",
+      "swe": [
+        {"internal": "L3", "canonical": "L2", "note": "Software Engineer II / new grad"},
+        {"internal": "L4", "canonical": "L3", "note": "Software Engineer III / mid IC"},
+        {"internal": "L5", "canonical": "L4", "note": "Senior Software Engineer. Terminal for many."},
+        {"internal": "L6", "canonical": "L5", "note": "Staff Software Engineer"},
+        {"internal": "L7", "canonical": "L6", "note": "Senior Staff Software Engineer"},
+        {"internal": "L8", "canonical": "L7", "note": "Principal"},
+        {"internal": "L9+", "canonical": "L7", "note": "Distinguished/Fellow capped at L7"}
+      ]
+    },
+    "meta": {
+      "public_title_convention": "All engineers titled 'Software Engineer' externally regardless of internal level. Internal E3-E10.",
+      "ladder_source": "https://www.jointaro.com/question/qV5oikdcgs4GWmGeousX/",
+      "mapping_basis": "E3 = new grad, E5 = Senior (terminal level), E6 = Staff, E7 = Senior Staff, E8 = Principal. PM uses IC4-IC6 instead of E-prefixed.",
+      "confidence": "Very high — widely documented.",
+      "swe": [
+        {"internal": "E3", "canonical": "L2", "note": "Entry, time-capped"},
+        {"internal": "E4", "canonical": "L3", "note": "Mid IC, time-capped"},
+        {"internal": "E5", "canonical": "L4", "note": "Senior. Terminal."},
+        {"internal": "E6", "canonical": "L5", "note": "Staff"},
+        {"internal": "E7", "canonical": "L6", "note": "Senior Staff"},
+        {"internal": "E8+", "canonical": "L7", "note": "Principal+"}
+      ]
+    },
+    "amazon": {
+      "public_title_convention": "SDE I, SDE II, SDE III (Senior), Principal SDE, Senior Principal SDE. Internal L4-L8.",
+      "ladder_source": "https://www.designgurus.io/blog/understanding-faang-software-engineer-job-levels",
+      "mapping_basis": "L4 = SDE I, L5 = SDE II, L6 = Senior, L7 = Principal. Amazon's L7 Principal has higher scope than Google L6 Staff — closer to Google L7 / WAGE L6.",
+      "confidence": "Very high.",
+      "swe": [
+        {"internal": "L4", "canonical": "L2", "note": "SDE I, new grad"},
+        {"internal": "L5", "canonical": "L3", "note": "SDE II, mid IC"},
+        {"internal": "L6", "canonical": "L4", "note": "SDE III / Senior SDE"},
+        {"internal": "L7", "canonical": "L6", "note": "Principal SDE. Higher scope than typical FAANG Staff."},
+        {"internal": "L8", "canonical": "L7", "note": "Senior Principal SDE"}
+      ]
+    },
+    "microsoft": {
+      "public_title_convention": "Software Engineer II, Senior Software Engineer, Principal Software Engineer, Partner Engineer. Internal levels 59-67.",
+      "ladder_source": "https://www.teamblind.com/post/level-names-for-tech-roles-1q3hvly0",
+      "mapping_basis": "59-60 = SE, 61-62 = SE II, 63-64 = Senior, 65 = Principal, 66 = Senior Principal, 67 = Partner. CRITICAL: Microsoft 'Principal' (level 65) is staff-equivalent, not senior staff.",
+      "confidence": "High.",
+      "swe": [
+        {"internal": "59-60", "canonical": "L2", "note": "Software Engineer / new grad"},
+        {"internal": "61-62", "canonical": "L3", "note": "Software Engineer II / mid"},
+        {"internal": "63-64", "canonical": "L4", "note": "Senior Software Engineer"},
+        {"internal": "65", "canonical": "L5", "note": "Principal SE. = FAANG Staff. NOT senior staff."},
+        {"internal": "66", "canonical": "L6", "note": "Senior Principal"},
+        {"internal": "67", "canonical": "L7", "note": "Partner Engineer"}
+      ]
+    },
+    "apple": {
+      "public_title_convention": "Software Engineer (with implicit level). Internal ICT2-ICT6.",
+      "ladder_source": "https://www.levels.fyi/salary/Apple/",
+      "mapping_basis": "ICT2 = entry, ICT3 = mid, ICT4 = Senior, ICT5 = Staff/Principal, ICT6 = Senior Principal/Distinguished.",
+      "confidence": "High.",
+      "swe": [
+        {"internal": "ICT2", "canonical": "L2", "note": "Entry"},
+        {"internal": "ICT3", "canonical": "L3", "note": "Mid IC"},
+        {"internal": "ICT4", "canonical": "L4", "note": "Senior"},
+        {"internal": "ICT5", "canonical": "L5", "note": "Staff/Principal"},
+        {"internal": "ICT6", "canonical": "L7", "note": "Senior Principal/Distinguished"}
+      ]
+    },
+    "databricks": {
+      "public_title_convention": "Software Engineer / Senior / Staff / Senior Staff / Principal. Internal L3-L8.",
+      "ladder_source": "https://www.levels.fyi/companies/databricks/salaries/software-engineer",
+      "mapping_basis": "L3 = SWE, L4 = mid, L5 = Senior, L6 = Staff, L7 = Senior Staff, L8 = Principal. Databricks ladder closely mirrors Google's.",
+      "confidence": "High.",
+      "swe": [
+        {"internal": "L3", "canonical": "L2", "note": "SWE / new grad"},
+        {"internal": "L4", "canonical": "L3", "note": "Mid IC"},
+        {"internal": "L5", "canonical": "L4", "note": "Senior SWE"},
+        {"internal": "L6", "canonical": "L5", "note": "Staff Engineer"},
+        {"internal": "L7", "canonical": "L6", "note": "Senior Staff Engineer"},
+        {"internal": "L8", "canonical": "L7", "note": "Principal Engineer"}
+      ],
+      "fde": "'Solutions Architect' / 'Resident Solutions Architect' roles."
+    },
+    "netflix": {
+      "public_title_convention": "Pre-2022: everyone titled 'Senior Software Engineer'. Post-2022: E3-E7 levels with corresponding titles.",
+      "ladder_source": "https://blog.pragmaticengineer.com/netflix-levels/",
+      "mapping_basis": "E3 = SE, E4 = SE II, E5 = Senior, E6 = Staff, E7 = Principal. Pre-2022 filings use 'Senior SE' for everyone — default to L4.",
+      "confidence": "High.",
+      "swe": [
+        {"internal": "E3", "canonical": "L2", "note": "SWE (post-2022)"},
+        {"internal": "E4", "canonical": "L3", "note": "SWE II"},
+        {"internal": "E5", "canonical": "L4", "note": "Senior SWE"},
+        {"internal": "E6", "canonical": "L5", "note": "Staff SWE"},
+        {"internal": "E7", "canonical": "L7", "note": "Principal SWE"}
+      ]
+    }
+  },
+  "open_questions_for_user": [
+    "FDE/Forward Deployed Engineer — should we also include Solutions Engineer / Customer Engineer roles from Google/Microsoft/Amazon as FDE? Currently treated as Other. The major FDE-style roles at AI labs (Anthropic Applied AI, OpenAI Solutions, Stripe Implementation Engineer, Databricks SA) are included.",
+    "Forward Deployed Engineer at Palantir was the original — not in our top 10 list. If you want Palantir in the demo, I can add separately.",
+    "Microsoft level 65 'Principal' is genuinely ambiguous — some sources call it Staff-equivalent (= WAGE L5), others closer to Senior Staff (= WAGE L6). I chose L5 (Staff-equivalent) as the more common interpretation. Worth noting in demo.",
+    "Anthropic level mapping has lowest confidence. They publish nothing official. Numbers are extrapolated from compensation tracker sites and employee chatter. The demo case should probably NOT be 'show Anthropic level T5 = exact salary' — show the percentile range instead and note 'verified by 47 DOL filings'.",
+    "Pre-2022 Netflix data will all show 'Senior Software Engineer' regardless of true seniority. If DOL filings are predominantly pre-2022, this column will be very noisy."
+  ]
+}

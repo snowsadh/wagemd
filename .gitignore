@@ -1,0 +1,46 @@
+# --- Secrets ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.uv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Node / Next.js ---
+node_modules/
+.next/
+*.tsbuildinfo
+out/
+.turbo/
+npm-debug.log*
+yarn-error.log*
+
+# --- Data (keep small samples in data-samples/, ignore bulk downloads) ---
+data-cache/
+*.csv.gz
+*.xlsx
+/agent/data/
+# Allow curated samples
+!data-samples/**
+
+# --- OS / editor ---
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Claude Code local settings + scratch
+.claude/settings.local.json
