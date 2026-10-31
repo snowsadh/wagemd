@@ -8,8 +8,9 @@ decisions.
 from __future__ import annotations
 
 import threading
+from typing import Literal
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -77,36 +78,69 @@ def companies() -> dict:
     return {"companies": [{"name": r[0], "slug": r[0].lower().replace(" ", "-"), "filings": r[1]} for r in rows]}
 
 
-def _company_payload(company: str) -> dict:
-    parameters = {"c": company}
-    rows, totals, role_totals, locations, monthly_filings, pub = query_many([
+def _company_payload(
+    company: str, role: str | None = None, level: str | None = None,
+    state: str | None = None, period: str = "all",
+) -> dict:
+    period_dates = {
+        "all": (None, None),
+        "FY2025": ("2024-10-01", "2025-10-01"),
+        "FY2026": ("2025-10-01", "2026-10-01"),
+    }
+    start, end = period_dates[period]
+    parameters = {"c": company, "role": role, "level": level, "state": state,
+                  "period": period, "start": start, "end": end}
+    base = " FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0"
+    period_sql = (" AND (%(period)s='all' OR "
+                  "(decision_date >= %(start)s::date AND decision_date < %(end)s::date))")
+    role_sql = " AND role_family=%(role)s" if role else ""
+    level_sql = " AND level_normalized=%(level)s" if level else ""
+    state_sql = " AND worksite_state=%(state)s" if state else ""
+    matched = base + period_sql + role_sql + level_sql + state_sql
+    rows, totals, matched_filings, role_totals, locations, monthly_filings, states, pub = query_many([
         ("SELECT role_family, level_normalized, count(*), "
-        "round(percentile_cont(0.5) WITHIN GROUP (ORDER BY wage_low_usd)), "
-        "round(percentile_cont(0.75) WITHIN GROUP (ORDER BY wage_low_usd)), "
-        "round(percentile_cont(0.9) WITHIN GROUP (ORDER BY wage_low_usd)) "
-        "FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0 "
-        "GROUP BY role_family, level_normalized HAVING count(*)>=2 ORDER BY 4 DESC LIMIT 40"),
-        "SELECT count(*) FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0",
-        ("SELECT role_family, count(*) FROM filings "
-        "WHERE employer_normalized=%(c)s AND wage_low_usd>0 "
-        "GROUP BY role_family ORDER BY 2 DESC"),
+         "round(percentile_cont(0.25) WITHIN GROUP (ORDER BY wage_low_usd)), "
+         "round(percentile_cont(0.5) WITHIN GROUP (ORDER BY wage_low_usd)), "
+         "round(percentile_cont(0.75) WITHIN GROUP (ORDER BY wage_low_usd)), "
+         "round(percentile_cont(0.9) WITHIN GROUP (ORDER BY wage_low_usd))"
+         + matched + " GROUP BY role_family, level_normalized HAVING count(*)>=5"
+         " ORDER BY 5 DESC LIMIT 40"),
+        "SELECT count(*) FROM filings WHERE employer_normalized=%(c)s",
+        ("SELECT count(*), "
+         "CASE WHEN count(*)>=5 THEN round(percentile_cont(0.25) "
+         "WITHIN GROUP (ORDER BY wage_low_usd)) END, "
+         "CASE WHEN count(*)>=5 THEN round(percentile_cont(0.5) "
+         "WITHIN GROUP (ORDER BY wage_low_usd)) END, "
+         "CASE WHEN count(*)>=5 THEN round(percentile_cont(0.75) "
+         "WITHIN GROUP (ORDER BY wage_low_usd)) END, "
+         "min(decision_date)::text, max(decision_date)::text" + matched),
+        ("SELECT role_family, count(*)" + base + period_sql + level_sql + state_sql
+         + " GROUP BY role_family ORDER BY 2 DESC"),
         ("SELECT worksite_state, count(*), "
-        "round(percentile_cont(0.5) WITHIN GROUP (ORDER BY wage_low_usd)) "
-        "FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0 "
-        "AND worksite_state<>'' GROUP BY worksite_state "
-        "HAVING count(*)>=5 ORDER BY 2 DESC LIMIT 6"),
-        ("SELECT to_char(date_trunc('month', decision_date), 'YYYY-MM'), count(*) "
-        "FROM filings WHERE employer_normalized=%(c)s AND wage_low_usd>0 "
-        "GROUP BY 1 ORDER BY 1"),
+         "round(percentile_cont(0.5) WITHIN GROUP (ORDER BY wage_low_usd))"
+         + base + period_sql + role_sql + level_sql
+         + " AND worksite_state<>'' GROUP BY worksite_state HAVING count(*)>=5"
+         " ORDER BY CASE WHEN worksite_state=%(state)s THEN 0 ELSE 1 END, 2 DESC LIMIT 6"),
+        ("SELECT to_char(date_trunc('month', decision_date), 'YYYY-MM'), count(*)"
+         + matched + " GROUP BY 1 ORDER BY 1"),
+        ("SELECT DISTINCT worksite_state FROM filings WHERE employer_normalized=%(c)s "
+         "AND worksite_state<>'' ORDER BY 1"),
         ("SELECT page_url, last_published::text FROM published_pages "
-        "WHERE employer_normalized=%(c)s AND markdown<>''"),
+         "WHERE employer_normalized=%(c)s AND markdown<>''"),
     ], parameters)
+    count, p25, p50, p75, first_decision, last_decision = matched_filings[0]
     return {
         "company": company,
         "total_filings": totals[0][0],
+        "matchedFilings": {
+            "count": count, "p25": int(p25) if p25 is not None else None,
+            "p50": int(p50) if p50 is not None else None,
+            "p75": int(p75) if p75 is not None else None,
+            "firstDecision": first_decision, "lastDecision": last_decision,
+        },
         "rows": [
             {"role_family": r[0], "level": r[1], "sample_size": r[2],
-             "p50": int(r[3]), "p75": int(r[4]), "p90": int(r[5])}
+             "p25": int(r[3]), "p50": int(r[4]), "p75": int(r[5]), "p90": int(r[6])}
             for r in rows
         ],
         "roleTotals": [{"role": r[0], "count": r[1]} for r in role_totals],
@@ -114,20 +148,27 @@ def _company_payload(company: str) -> dict:
             {"state": r[0], "count": r[1], "median": int(r[2])} for r in locations
         ],
         "monthlyFilings": [{"month": r[0], "count": r[1]} for r in monthly_filings],
+        "stateOptions": [r[0] for r in states],
         "briefUrl": pub[0][0] if pub else None,
     }
 
 
 @app.get("/company/{slug}")
-def get_company(slug: str, fetch: bool = True) -> dict:
+def get_company(
+    slug: str, fetch: bool = True,
+    role: Literal["SWE", "PM", "Design", "FDE", "ML", "Data", "Other"] | None = None,
+    level: Literal["L1", "L2", "L3", "L4", "L5", "L6", "L7", "Unknown"] | None = None,
+    state: str | None = Query(default=None, pattern="^[A-Z]{2}$"),
+    period: Literal["all", "FY2025", "FY2026"] = "all",
+) -> dict:
     company = _slug_to_company(slug)
-    payload = _company_payload(company)
+    payload = _company_payload(company, role, level, state, period)
     if payload["total_filings"] == 0 and fetch:  # fetch-on-miss, then re-query
         from ..ingestion.on_demand import ingest_company
 
         with _AGENT_LOCK:
             res = ingest_company(company)
-        payload = _company_payload(res.get("company", company))
+        payload = _company_payload(res.get("company", company), role, level, state, period)
         payload["fetched_on_demand"] = res.get("ingested", 0)
     return payload
 

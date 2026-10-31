@@ -5,15 +5,32 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 export type DistRow = {
   role_family: string;
   level: string;
+  p25: number;
   p50: number;
   p75: number;
   p90: number;
   sample_size: number;
 };
 
+export type CompanyFilters = {
+  role: string;
+  level: string;
+  state: string;
+  period: "all" | "FY2025" | "FY2026";
+};
+
 export type CompanyDistribution = {
   company: string;
   total_filings: number;
+  matchedFilings: {
+    count: number;
+    p25: number | null;
+    p50: number | null;
+    p75: number | null;
+    firstDecision: string | null;
+    lastDecision: string | null;
+  };
+  stateOptions: string[];
   rows: DistRow[];
   roleTotals: Array<{ role: string; count: number }>;
   locations: Array<{ state: string; median: number; count: number }>;
@@ -51,8 +68,15 @@ export const getHealth = () =>
 export const getCompanies = () =>
   getJSON<{ companies: Array<{ name: string; slug: string; filings: number }> }>("/companies");
 
-export const getCompany = (slug: string) =>
-  getJSON<CompanyDistribution>(`/company/${encodeURIComponent(slug)}`);
+export const getCompany = (slug: string, filters?: Partial<CompanyFilters>) => {
+  const params = new URLSearchParams();
+  if (filters?.role) params.set("role", filters.role);
+  if (filters?.level) params.set("level", filters.level);
+  if (filters?.state) params.set("state", filters.state);
+  if (filters?.period && filters.period !== "all") params.set("period", filters.period);
+  const query = params.toString();
+  return getJSON<CompanyDistribution>(`/company/${encodeURIComponent(slug)}${query ? `?${query}` : ""}`);
+};
 
 export const listPublished = () =>
   getJSON<{ pages: Array<{ company: string; url: string; last_published: string; sample_size: number }> }>(
