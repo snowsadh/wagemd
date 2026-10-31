@@ -80,6 +80,8 @@ export default async function CompanyPage({ params, searchParams = {} }: { param
         roleTotals={data.roleTotals}
         locations={data.locations}
         monthlyFilings={data.monthlyFilings}
+        levelMedians={data.levelMedians}
+        caseTypeTotals={data.caseTypeTotals}
         filters={filters}
       />
 

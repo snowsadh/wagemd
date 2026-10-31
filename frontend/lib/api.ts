@@ -34,7 +34,9 @@ export type CompanyDistribution = {
   rows: DistRow[];
   roleTotals: Array<{ role: string; count: number }>;
   locations: Array<{ state: string; median: number; count: number }>;
-  monthlyFilings: Array<{ month: string; count: number }>;
+  monthlyFilings: Array<{ month: string; count: number; p50: number | null }>;
+  levelMedians: Array<{ level: string; count: number; median: number }>;
+  caseTypeTotals: Array<{ caseType: string; count: number }>;
   briefUrl?: string | null;
 };
 

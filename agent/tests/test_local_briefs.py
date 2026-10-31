@@ -59,7 +59,7 @@ def test_index_brief_and_company_api_share_local_url(monkeypatch):
 
     monkeypatch.setattr(server, "query", fake_query)
     monkeypatch.setattr(server, "query_many", lambda statements, parameters: [
-        [], [(12,)], [(0, None, None, None, None, None)], [], [], [], [],
+        [], [(12,)], [(0, None, None, None, None, None)], [], [], [], [], [], [],
         [(url, "2026-10-31")]
     ])
     client = TestClient(server.app)

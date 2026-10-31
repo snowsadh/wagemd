@@ -1,9 +1,10 @@
 // Shows filing and wage comparisons from a company distribution response.
 import type { CompanyDistribution, CompanyFilters } from "@/lib/api";
+import { CaseTypeMix, LevelMedians, WageTrend } from "@/components/CompanyExtraCharts";
 
 type CompanyChartsProps = Pick<
   CompanyDistribution,
-  "rows" | "roleTotals" | "locations" | "monthlyFilings"
+  "rows" | "roleTotals" | "locations" | "monthlyFilings" | "levelMedians" | "caseTypeTotals"
 > & { filters: CompanyFilters };
 
 const money = (value: number) => "$" + Math.round(value).toLocaleString();
@@ -133,25 +134,29 @@ function StateMedians({ locations, filters }: Pick<CompanyChartsProps, "location
   );
 }
 
-function MonthlyFilings({ monthlyFilings }: Pick<CompanyChartsProps, "monthlyFilings">) {
+function recentMonths(monthlyFilings: CompanyDistribution["monthlyFilings"]) {
   const latestMonths: CompanyDistribution["monthlyFilings"] = [];
   if (monthlyFilings.length) {
-    const byMonth = new Map(monthlyFilings.map((row) => [row.month, row.count]));
+    const byMonth = new Map(monthlyFilings.map((row) => [row.month, row]));
     const first = monthlyFilings[0].month;
     const cursor = new Date(`${monthlyFilings[monthlyFilings.length - 1].month}-01T00:00:00Z`);
     for (let i = 0; i < 12 && cursor.toISOString().slice(0, 7) >= first; i++) {
       const month = cursor.toISOString().slice(0, 7);
-      latestMonths.unshift({ month, count: byMonth.get(month) ?? 0 });
+      latestMonths.unshift({ month, count: byMonth.get(month)?.count ?? 0, p50: byMonth.get(month)?.p50 ?? null });
       cursor.setUTCMonth(cursor.getUTCMonth() - 1);
     }
   }
-  const scale = Math.max(1, ...latestMonths.map((row) => row.count));
+  return latestMonths;
+}
+
+function MonthlyFilings({ months }: { months: CompanyDistribution["monthlyFilings"] }) {
+  const scale = Math.max(1, ...months.map((row) => row.count));
 
   return (
     <section aria-labelledby="monthly-filings" className="rounded-lg border border-neutral-200 bg-neutral-50 p-5 sm:p-6">
       <h2 id="monthly-filings" className="text-xl font-normal">Decisions over time</h2>
       <p className="mt-1 text-sm text-neutral-500">Up to 12 recent months in the selected cohort · cases by DOL decision date</p>
-      {latestMonths.length === 0 ? (
+      {months.length === 0 ? (
         <p className="mt-5 text-sm text-neutral-500">No monthly filing counts available.</p>
       ) : (
         <div className="mt-5 overflow-x-auto pb-2">
@@ -161,7 +166,7 @@ function MonthlyFilings({ monthlyFilings }: Pick<CompanyChartsProps, "monthlyFil
               <span className="absolute bottom-0 right-0 translate-y-1/2">0</span>
             </div>
             <ol className="flex flex-1 gap-2 border-b border-neutral-300">
-              {latestMonths.map((row) => (
+              {months.map((row) => (
                 <li key={row.month} className="min-w-[3rem] flex-1 text-center">
                   <div className="relative h-36 border-b border-neutral-300" aria-hidden="true">
                     <div className="absolute bottom-0 left-1/2 w-8 -translate-x-1/2 bg-signal sm:w-10" style={{ height: `${(row.count / scale) * 80}%` }} />
@@ -175,7 +180,7 @@ function MonthlyFilings({ monthlyFilings }: Pick<CompanyChartsProps, "monthlyFil
               ))}
             </ol>
           </div>
-          {latestMonths.length > 5 && <p className="mt-2 text-right text-xs text-neutral-500 sm:hidden">Scroll to see more months →</p>}
+          {months.length > 5 && <p className="mt-2 text-right text-xs text-neutral-500 sm:hidden">Scroll to see more months →</p>}
         </div>
       )}
     </section>
@@ -183,12 +188,16 @@ function MonthlyFilings({ monthlyFilings }: Pick<CompanyChartsProps, "monthlyFil
 }
 
 export default function CompanyCharts(props: CompanyChartsProps) {
+  const months = recentMonths(props.monthlyFilings);
   return (
     <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
       <div className="sm:col-span-2"><WageRanges rows={props.rows} filters={props.filters} /></div>
-      <RoleTotals roleTotals={props.roleTotals} filters={props.filters} />
+      <div className="sm:col-span-2"><WageTrend months={months} /></div>
+      <LevelMedians levels={props.levelMedians} filters={props.filters} />
       <StateMedians locations={props.locations} filters={props.filters} />
-      <div className="sm:col-span-2"><MonthlyFilings monthlyFilings={props.monthlyFilings} /></div>
+      <RoleTotals roleTotals={props.roleTotals} filters={props.filters} />
+      <CaseTypeMix caseTypes={props.caseTypeTotals} />
+      <div className="sm:col-span-2"><MonthlyFilings months={months} /></div>
     </div>
   );
 }

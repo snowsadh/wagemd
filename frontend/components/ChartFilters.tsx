@@ -4,6 +4,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import type { CompanyFilters } from "@/lib/api";
+import SelectField from "@/components/ui/SelectField";
 
 const ROLES = [
   ["SWE", "Software engineering"],
@@ -16,6 +17,13 @@ const ROLES = [
 ] as const;
 
 const LEVELS = ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "Unknown"] as const;
+const ROLE_OPTIONS = [{ value: "all", label: "All roles" }, ...ROLES.map(([value, label]) => ({ value, label, shortLabel: value === "SWE" ? "Software eng." : undefined }))];
+const LEVEL_OPTIONS = [{ value: "all", label: "All levels" }, ...LEVELS.map((level) => ({ value: level, label: level }))];
+const PERIOD_OPTIONS = [
+  { value: "all", label: "All available" },
+  { value: "FY2026", label: "FY2026" },
+  { value: "FY2025", label: "FY2025" },
+];
 
 type Props = {
   slug: string;
@@ -49,37 +57,28 @@ export default function ChartFilters({ slug, states, selected }: Props) {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <label className="flex flex-col gap-1.5 text-xs font-medium text-neutral-600" htmlFor="chart-role">
             Role
-            <select id="chart-role" value={filters.role} onChange={(event) => setFilters({ ...filters, role: event.target.value })}
-              className="h-11 w-full rounded-md border border-neutral-300 bg-white px-3 text-sm text-neutral-900">
-              <option value="">All roles</option>
-              {ROLES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-            </select>
+            <SelectField id="chart-role" value={filters.role || "all"}
+              onValueChange={(value) => setFilters({ ...filters, role: value === "all" ? "" : value })} options={ROLE_OPTIONS} />
           </label>
           <label className="flex flex-col gap-1.5 text-xs font-medium text-neutral-600" htmlFor="chart-level">
             Inferred level
-            <select id="chart-level" value={filters.level} onChange={(event) => setFilters({ ...filters, level: event.target.value })}
-              className="h-11 w-full rounded-md border border-neutral-300 bg-white px-3 text-sm text-neutral-900">
-              <option value="">All levels</option>
-              {LEVELS.map((level) => <option key={level} value={level}>{level}</option>)}
-            </select>
+            <SelectField id="chart-level" value={filters.level || "all"}
+              onValueChange={(value) => setFilters({ ...filters, level: value === "all" ? "" : value })} options={LEVEL_OPTIONS} />
           </label>
           <label className="flex flex-col gap-1.5 text-xs font-medium text-neutral-600" htmlFor="chart-state">
             Worksite state
-            <select id="chart-state" value={filters.state} onChange={(event) => setFilters({ ...filters, state: event.target.value })}
-              className="h-11 w-full rounded-md border border-neutral-300 bg-white px-3 text-sm text-neutral-900">
-              <option value="">All states</option>
-              {selected.state && !states.includes(selected.state) && <option value={selected.state}>{selected.state} (no indexed filings)</option>}
-              {states.map((state) => <option key={state} value={state}>{state}</option>)}
-            </select>
+            <SelectField id="chart-state" value={filters.state || "all"}
+              onValueChange={(value) => setFilters({ ...filters, state: value === "all" ? "" : value })}
+              options={[
+                { value: "all", label: "All states" },
+                ...(selected.state && !states.includes(selected.state) ? [{ value: selected.state, label: `${selected.state} (no indexed filings)` }] : []),
+                ...states.map((state) => ({ value: state, label: state })),
+              ]} />
           </label>
           <label className="flex flex-col gap-1.5 text-xs font-medium text-neutral-600" htmlFor="chart-period">
             Decision period
-            <select id="chart-period" value={filters.period} onChange={(event) => setFilters({ ...filters, period: event.target.value as CompanyFilters["period"] })}
-              className="h-11 w-full rounded-md border border-neutral-300 bg-white px-3 text-sm text-neutral-900">
-              <option value="all">All available</option>
-              <option value="FY2026">FY2026</option>
-              <option value="FY2025">FY2025</option>
-            </select>
+            <SelectField id="chart-period" value={filters.period}
+              onValueChange={(value) => setFilters({ ...filters, period: value as CompanyFilters["period"] })} options={PERIOD_OPTIONS} />
           </label>
         </div>
         <div className="mt-4 flex items-center gap-4">

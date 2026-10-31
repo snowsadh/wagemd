@@ -97,7 +97,8 @@ def _company_payload(
     level_sql = " AND level_normalized=%(level)s" if level else ""
     state_sql = " AND worksite_state=%(state)s" if state else ""
     matched = base + period_sql + role_sql + level_sql + state_sql
-    rows, totals, matched_filings, role_totals, locations, monthly_filings, states, pub = query_many([
+    (rows, totals, matched_filings, role_totals, locations, monthly_filings,
+     level_medians, case_type_totals, states, pub) = query_many([
         ("SELECT role_family, level_normalized, count(*), "
          "round(percentile_cont(0.25) WITHIN GROUP (ORDER BY wage_low_usd)), "
          "round(percentile_cont(0.5) WITHIN GROUP (ORDER BY wage_low_usd)), "
@@ -121,8 +122,17 @@ def _company_payload(
          + base + period_sql + role_sql + level_sql
          + " AND worksite_state<>'' GROUP BY worksite_state HAVING count(*)>=5"
          " ORDER BY CASE WHEN worksite_state=%(state)s THEN 0 ELSE 1 END, 2 DESC LIMIT 6"),
-        ("SELECT to_char(date_trunc('month', decision_date), 'YYYY-MM'), count(*)"
+        ("SELECT to_char(date_trunc('month', decision_date), 'YYYY-MM'), count(*), "
+         "CASE WHEN count(*)>=5 THEN round(percentile_cont(0.5) "
+         "WITHIN GROUP (ORDER BY wage_low_usd)) END"
          + matched + " GROUP BY 1 ORDER BY 1"),
+        ("SELECT level_normalized, count(*), "
+         "round(percentile_cont(0.5) WITHIN GROUP (ORDER BY wage_low_usd))"
+         + base + period_sql + role_sql + state_sql
+         + " AND level_normalized<>'Unknown'"
+         " GROUP BY level_normalized HAVING count(*)>=5 ORDER BY 1"),
+        ("SELECT case_type, count(*)" + matched
+         + " GROUP BY case_type ORDER BY 1"),
         ("SELECT DISTINCT worksite_state FROM filings WHERE employer_normalized=%(c)s "
          "AND worksite_state<>'' ORDER BY 1"),
         ("SELECT page_url, last_published::text FROM published_pages "
@@ -147,7 +157,18 @@ def _company_payload(
         "locations": [
             {"state": r[0], "count": r[1], "median": int(r[2])} for r in locations
         ],
-        "monthlyFilings": [{"month": r[0], "count": r[1]} for r in monthly_filings],
+        "monthlyFilings": [
+            {"month": r[0], "count": r[1], "p50": int(r[2]) if r[2] is not None else None}
+            for r in monthly_filings
+        ],
+        "levelMedians": [
+            {"level": r[0], "count": r[1], "median": int(r[2])}
+            for r in level_medians
+        ],
+        "caseTypeTotals": [
+            {"caseType": r[0], "count": r[1]}
+            for r in case_type_totals
+        ],
         "stateOptions": [r[0] for r in states],
         "briefUrl": pub[0][0] if pub else None,
     }
