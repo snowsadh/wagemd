@@ -133,7 +133,18 @@ export default async function Home() {
         </p>
       </section>
 
-      {/* 5 — See it */}
+      {/* 5 — Tiger Data */}
+      <section className="flex flex-col gap-3 rounded-lg border border-neutral-200 bg-neutral-50 p-6 sm:p-8">
+        <h2 className="text-2xl font-normal tracking-tight">Powered by Tiger Data</h2>
+        <p className="max-w-3xl text-neutral-600">
+          Tiger Data is the backbone of WAGE.md. It holds the filing corpus and published
+          company briefs, while PostgreSQL queries calculate wage percentiles directly from
+          the source rows. That shared foundation lets you move from a salary figure to the
+          underlying DOL cases with the context intact.
+        </p>
+      </section>
+
+      {/* 6 — See it */}
       <section className="flex flex-col gap-5 border-t border-neutral-200 pt-10">
         <h2 className="text-2xl font-normal tracking-tight">See it</h2>
         <div className="grid gap-4 sm:grid-cols-3">
@@ -152,7 +163,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 6 — Tools */}
+      {/* 7 — Tools */}
       <section className="flex flex-col gap-3 border-t border-neutral-200 pt-10">
         <p className="text-sm text-neutral-400">Built with</p>
         <div className="flex flex-wrap gap-2">
