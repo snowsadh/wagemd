@@ -63,6 +63,7 @@ class OpenAIClient:
         contents: list[Any],
         system_instruction: str | None = None,
         tools: list[dict[str, Any]] | None = None,
+        tool_choice: dict[str, str] | None = None,
         response_json: bool = False,
     ) -> Any:
         kwargs: dict[str, Any] = {"model": model, "input": contents}
@@ -70,6 +71,8 @@ class OpenAIClient:
             kwargs["instructions"] = system_instruction
         if tools:
             kwargs["tools"] = tools
+        if tool_choice:
+            kwargs["tool_choice"] = tool_choice
         if response_json:
             kwargs["text"] = {"format": {"type": "json_object"}}
         resp = self._client.responses.create(**kwargs)

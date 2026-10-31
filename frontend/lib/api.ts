@@ -30,7 +30,7 @@ export type Offer = {
 export type TraceStep = { tool: string; args: Record<string, unknown>; result: unknown };
 export type AgentResult = {
   status: string;
-  result: { report?: string } | string;
+  result?: { report?: string } | string;
   iterations: number;
   trace: TraceStep[];
   agent: string;

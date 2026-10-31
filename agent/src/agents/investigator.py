@@ -73,7 +73,8 @@ def run(anomaly: dict | None = None, model: str | None = None) -> dict:
             max_iterations=8,
         )
     except AgentLoopExhausted as e:
-        result = {"status": "exhausted", "iterations": e.iterations, "goal": e.goal, "trace": []}
+        result = {"status": "exhausted", "iterations": e.iterations, "goal": e.goal,
+                  "trace": e.trace}
 
     # Resolve if the agent published a brief; otherwise mark dismissed (so it isn't re-investigated).
     trace = result.get("trace", []) if isinstance(result, dict) else []

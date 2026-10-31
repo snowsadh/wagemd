@@ -48,7 +48,8 @@ def run(model: str | None = None) -> dict:
             max_iterations=8,
         )
     except AgentLoopExhausted as e:
-        return {"status": "exhausted", "iterations": e.iterations, "goal": e.goal}
+        return {"status": "exhausted", "iterations": e.iterations, "goal": e.goal,
+                "trace": e.trace, "agent": "scout"}
 
 
 if __name__ == "__main__":

@@ -85,7 +85,9 @@ export default function NegotiatePage() {
             </ol>
           </div>
           <article className="prose prose-sm prose-neutral max-w-none rounded-md border border-neutral-200 p-5 prose-headings:font-normal prose-table:text-xs prose-th:text-left prose-a:text-signal">
-            {report ? (
+            {result.status === "exhausted" ? (
+              "Counselor reached its iteration limit. Try again; the trace above shows what it checked."
+            ) : report ? (
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{report}</ReactMarkdown>
             ) : (
               "No report returned."

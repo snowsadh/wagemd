@@ -8,14 +8,15 @@ returns a final text answer, or hits the hard iteration cap.
 Design rules (SPEC.md / DECISIONS.md):
   - OpenAI function calling drives tool selection. The loop NEVER hard-codes a
     sequence of tool calls — that would make it a pipeline, not an agent.
-  - max_iterations=5 is a hard safety cap; exhaustion raises AgentLoopExhausted.
+  - The default is 5 iterations and the hard ceiling is 8; exhaustion preserves the trace.
   - Tool calls and results are returned in the trace for the UI.
 """
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any
 
 from .config import settings
 from .openai_client import OpenAIClient, get_openai
@@ -24,9 +25,10 @@ from .openai_client import OpenAIClient, get_openai
 class AgentLoopExhausted(Exception):
     """Raised when an agent hits max_iterations without reaching a final answer."""
 
-    def __init__(self, goal: str, iterations: int):
+    def __init__(self, goal: str, iterations: int, trace: list[dict]):
         self.goal = goal
         self.iterations = iterations
+        self.trace = trace
         super().__init__(f"Agent exhausted {iterations} iterations without finishing: {goal!r}")
 
 
@@ -60,6 +62,7 @@ def run_agent(
     system_prompt: str,
     model: str | None = None,
     max_iterations: int = 5,
+    final_tool: str | None = None,
     agent_name: str = "agent",
     openai: OpenAIClient | None = None,
 ) -> dict:
@@ -67,12 +70,15 @@ def run_agent(
 
     Returns {"status": "ok", "result": <terminal tool result or final text>,
              "iterations": n, "trace": [...tool calls...], "agent": agent_name}.
-    Raises AgentLoopExhausted if no final answer within max_iterations.
+    If final_tool is set, require that terminal tool on the last allowed iteration.
+    Raises AgentLoopExhausted with the trace if no final answer arrives.
     """
     openai = openai or get_openai()
     model = model or settings.openai_model
     max_iterations = max(1, min(int(max_iterations), MAX_ITERATIONS_CEILING))  # enforce hard ceiling
     impls = {t.name: t for t in tools}
+    if final_tool and (final_tool not in impls or not impls[final_tool].terminal):
+        raise ValueError(f"final_tool must name a terminal tool: {final_tool}")
     model_tools = openai.build_tools(
         [{"name": t.name, "description": t.description, "parameters": t.parameters} for t in tools]
     )
@@ -86,6 +92,8 @@ def run_agent(
             contents=contents,
             system_instruction=system_prompt,
             tools=model_tools,
+            tool_choice={"type": "function", "name": final_tool}
+            if final_tool and i == max_iterations - 1 else None,
         )
         calls = openai.function_calls(resp)
 
@@ -111,7 +119,7 @@ def run_agent(
             else:
                 try:
                     result = tool.impl(**args)
-                except Exception as e:  # feed the error back so the agent can recover
+                except Exception as e:  # noqa: BLE001 - feed tool errors back so the agent can recover
                     result = {"error": f"{type(e).__name__}: {e}"}
             result = _json_safe(result)
             trace.append({"tool": name, "args": args, "result": result})
@@ -128,4 +136,4 @@ def run_agent(
                 "agent": agent_name,
             }
 
-    raise AgentLoopExhausted(goal, max_iterations)
+    raise AgentLoopExhausted(goal, max_iterations, trace)

@@ -57,9 +57,11 @@ def run(offer: dict, model: str | None = None) -> dict:
             model=model or settings.openai_model,
             agent_name="counselor",
             max_iterations=7,
+            final_tool="done",
         )
     except AgentLoopExhausted as e:
-        return {"status": "exhausted", "iterations": e.iterations, "goal": e.goal}
+        return {"status": "exhausted", "iterations": e.iterations, "goal": e.goal,
+                "trace": e.trace, "agent": "counselor"}
 
 
 if __name__ == "__main__":
