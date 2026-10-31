@@ -19,7 +19,7 @@ export default function SearchBar() {
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Search any of 50 companies — e.g. Anthropic"
+        placeholder="Search a company — e.g. Amazon"
         className="w-full rounded-md border border-neutral-300 px-4 py-3 text-base outline-none focus:border-neutral-900"
       />
       <button

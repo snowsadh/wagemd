@@ -1,8 +1,9 @@
 """PostgreSQL client and TimescaleDB schema for the WAGE.md agent."""
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any
 
 import psycopg
 from psycopg import sql as psql
@@ -101,6 +102,7 @@ def transaction() -> psycopg.Connection:
 
 def query(sql: str, parameters: dict | None = None, kind: str = "select") -> QueryResult:
     with transaction() as conn, conn.cursor() as cur:
+        conn.autocommit = True  # SELECTs need no BEGIN/COMMIT round trips to Tiger Cloud.
         cur.execute(sql, parameters)
         rows = cur.fetchall()
         return QueryResult(rows, [col.name for col in cur.description or ()])
@@ -172,7 +174,7 @@ def apply_schema() -> None:
 def ping() -> bool:
     try:
         return query("SELECT 1").result_rows[0][0] == 1
-    except Exception as exc:  # pragma: no cover
+    except Exception as exc:  # noqa: BLE001  # pragma: no cover
         print(f"Tiger Data ping failed: {exc}")
         return False
 
